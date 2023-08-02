@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  <title>Response</title>
+</head>
+<style>
+  td.sourceIp {
+    width: 145px;
+}
+
+table {
+  width: 100%;
+}
+
+th,
+td {
+  padding: 10px;
+}
+
+.actions {
+  text-align: right;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: black;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: black;
+}
+
+.collapse {
+  display: none;
+}
+
+.emailPass {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+</style>
+<body>
+  <div class="container">
+  <h1>IP list and per name of attempts</h1>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>IP</th>
+        <th>Count</th>
+        <th>Emails & Passwords</th>
+        <th>User Agent</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr id="listObjectsTable" class="listObjectsTable">
+       
+      </tr>
+    </tbody>
+  </table>
+  
+  <div class="col-lg-12" id="list-ips">
+    <ul id="listObj" class="list-group">
+
+    </ul>
+    <!-- Insert my list here -->                              
+  </div>
+</div>
+</body>
+<script>
+   fetch('/response')
+    .then(response => {
+      //console.log("response ", response);
+      return response.json()})
+    .then(data => {
+      // ipslist.textContent = data.objectList;
+      //var listDiv = document.getElementById('list-ips');
+      var listDiv = document.getElementById('listObjectsTable');
+      var ul = document.getElementById('listObj');
+      const table = document.querySelector('table');
+      
+      let fileNames = data.objectList;
+      console.log("data ", fileNames);
+
+  fileNames.forEach(fileName => {
+    let ip = fileName.sourceIp;
+    let count = fileName.count;
+    let objectsList = fileName.objects;
+
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+    td.className = 'sourceIp';
+    td.innerHTML = ip;
+    
+    const td2 = document.createElement('td');
+    td2.className = 'count';
+    td2.innerHTML = count;
+
+    const td3 = document.createElement('td');
+    td2.className = 'email';
+    td.textContent = fileName.sourceIp;
+    td2.textContent = fileName.count;
+
+    let fileNamesObjects = fileName.objects;
+    console.log("fileNamesObjects ", fileNamesObjects);
+    const tr2 = document.createElement('div');
+    let objectArray = [];
+fileNamesObjects.forEach(fileName => {
+  console.log("fileName ", fileName);
+ 
+  let resObject = {
+    "Login": fileName.req_body_Login,
+    "Password": fileName.req_body_Password
+  }
+  objectArray.push(JSON.stringify(resObject));
+})
+    tr2.textContent = objectArray;
+   // tr2.textContent = fileName.objects[0].status;
+   
+    tr2.classList.add('collapse');
+    tr2.id = 'emailPass';
+    tr2.setAttribute('data-toggle', 'collapse');
+    tr2.setAttribute('data-target', '#emailPass');
+
+    const button1 = document.createElement('button');
+    button1.innerHTML = 'Show';
+    button1.classList.add('btn', 'btn-primary', 'btn-sm');
+    button1.setAttribute('data-toggle', '#emailPass');
+    button1.setAttribute('data-target', '#emailPass');
+    button1.addEventListener('click', () => {
+      tr2.classList.remove('collapse');
+      tr2.classList.add('unhide');
+    });
+
+    const button2 = document.createElement('button');
+    button2.innerHTML = 'Hide';
+    button2.classList.add('btn', 'btn-secondary', 'btn-sm');
+    button2.setAttribute('data-toggle', 'collapse');
+    button2.setAttribute('data-target', '#emailPass');
+    button2.addEventListener('click', () => {
+      tr2.classList.remove('collapse');
+      tr2.classList.add('collapse');
+    });
+
+    
+
+    td3.appendChild(button1);
+    td3.appendChild(button2);
+    td3.appendChild(tr2);
+    tr.appendChild(td);
+    tr.appendChild(td2);
+    tr.appendChild(td3);
+    table.appendChild(tr);
+  });
+    })
+    .catch(err => {
+      console.log("error ", err);
+    });
+
+</script>
+</html>
