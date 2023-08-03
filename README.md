@@ -20,6 +20,10 @@ This project allows you to upload a Grafana JSON file and interact with it. It u
 
 Upload your Grafana JSON files and interact with them through the provided API endpoints. The logs are handled by Pino.js, providing detailed information about the requests and responses.
 
+## Alternative Use
+
+You can use the simpler version of this project by running `myscript.js`. This script provides a streamlined experience for interacting with Grafana JSON files.
+
 ## Customization
 
 The project is designed to be adaptable to your needs. You can modify the logging level in Pino.js or add new functionalities as per your requirements.
